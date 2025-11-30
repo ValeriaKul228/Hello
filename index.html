@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Узнай свой IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .ip-address {
+            font-size: 42px;
+            font-weight: bold;
+            margin: 30px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .info-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Определяем ваш IP-адрес</h1>
+        <div class="ip-address" id="ip">Загрузка...</div>
+        <p>Этот адрес виден владельцу сайта</p>
+        
+        <div class="info-box">
+            <h3>📊 Информация о подключении:</h3>
+            <p id="browserInfo"></p>
+            <p id="timeInfo"></p>
+            <p id="locationInfo"></p>
+        </div>
+    </div>
+
+    <script>
+        // Получаем IP адрес
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').textContent = data.ip;
+                
+                // Сохраняем информацию о посещении
+                saveVisit(data.ip);
+            });
+
+        // Функция сохранения информации о посещении
+        function saveVisit(ip) {
+            const visitData = {
+                ip: ip,
+                userAgent: navigator.userAgent,
+                time: new Date().toLocaleString('ru-RU'),
+                language: navigator.language,
+                referrer: document.referrer || 'Прямой заход'
+            };
+            
+            // Показываем информацию пользователю
+            document.getElementById('browserInfo').textContent = 
+                'Браузер: ' + visitData.userAgent;
+            document.getElementById('timeInfo').textContent = 
+                'Время: ' + visitData.time;
+            
+            // Здесь можно добавить отправку данных на сервер
+            console.log('Информация о посещении:', visitData);
+        }
+    </script>
+</body>
+</html>
